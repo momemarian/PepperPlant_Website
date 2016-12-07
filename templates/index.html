@@ -1,7 +1,20 @@
-<!DOCTYPE html>
 
-<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}">
+<!doctype html>
+<html lang="en">
 
-<title>Pepper Plants Website</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}">
 
-<h1>Welcome to my Pepper Plant website that is running on a BeagleBone Black using python/Flask</h>
+    <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="The HTML5 Herald">
+        <meta name="author" content="SitePoint">
+        <title>Pepper Plants Website</title>     
+    </head>
+
+    <body>
+        <h1>Welcome to my Pepper Plant website</h1>
+        <p> This website is running on a BeagleBone Black using python/Flask</p>
+    </body>
+</html>

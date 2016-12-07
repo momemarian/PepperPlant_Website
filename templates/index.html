@@ -2,9 +2,10 @@
 <!doctype html>
 <html lang="en">
 
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}"/>
 
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+
 
     <head>
         <meta charset="utf-8">
@@ -16,5 +17,9 @@
     <body>
         <h1>Welcome to my Pepper Plant website</h1>
         <p> This website is running on a BeagleBone Black using python/Flask</p>
+        <div id="webcam_image">
+            <img src="{{ url_for('static', filename='favicon.png') }}" alt="Webcam Image" width="100%" height="100%">
+        </div>
+        
     </body>
 </html>

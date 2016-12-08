@@ -1,6 +1,6 @@
 h1 {
     font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
-    font-size: 24px;
+    font-size: 48px;
     font-style: normal;
     font-variant: normal;
     font-weight: 500;
@@ -10,7 +10,7 @@ h1 {
 
 p {
     font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
-    font-size: 14px;
+    font-size: 20px;
     font-style: normal;
     font-variant: normal;
     font-weight: 400;
@@ -18,8 +18,21 @@ p {
     text-align: center;
 }
 
-#webcam_image{
+#pepper_div{
     margin: auto;
     width: 50%;
 }
+
+
+#webcam_div{
+    margin: auto;
+    width: 50%;
+}
+
+#reload_button_div{
+    margin: auto;
+    width: 50%;
+}
+
+
 

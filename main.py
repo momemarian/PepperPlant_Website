@@ -6,18 +6,19 @@ import sys
 imgNum = 0
 def fetch_new_image():
 
+	webSiteRoot = "/root/PepperPlant_Website/"
 	imgNumber = 1
 
 	call("/root/usb_cam/grabber.o")
 	
-	im = Image.open("/root/PepperPlant_Website/out001.ppm")
+	im = Image.open(webSiteRoot+"out001.ppm")
 	
-	tmp_name = '/root/PepperPlant_Website/static/webcam_{0:d}.jpg'.format(imgNumber)
+	tmp_name = '{0}static/webcam_{1:d}.jpg'.format(webSiteRoot,imgNumber)
 
 	im.save(tmp_name)
 
-	call(["rm","/root/PepperPlant_Website/out000.ppm"\
-		,"/root/PepperPlant_Website/out001.ppm"] )
+	call(["rm",webSiteRoot+"out000.ppm"\
+	 	,webSiteRoot+"out001.ppm"] )
 
 	return imgNumber
 	

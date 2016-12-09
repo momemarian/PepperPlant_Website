@@ -22,7 +22,8 @@
             function(data,status){
                 if (status == "success"){
                     var image = document.getElementById('webcam_img');
-                    image.src = "{{ url_for('static', filename='webcam_') }}".concat(data,".jpg");
+                    image.src = "{{ url_for('static', filename='webcam_images/') }}".concat(data);
+                    // console.log("{{ url_for('static', filename='webcam_images/webcam_') }}".concat(data,".jpg"));
                 }
                 
             });
@@ -42,7 +43,7 @@
         </div>
 
         <div id="webcam_div">
-            <img src="{{ url_for('static', filename='webcam_'+imgNumber+'.jpg') }}" alt="Webcam Image" width="100%" id="webcam_img">    
+            <img src="{{ url_for('static', filename='webcam_images/' + imgFileName) }}" alt="Webcam Image" width="100%" id="webcam_img">    
         </div>
 
         <div id="reload_button_div">

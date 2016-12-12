@@ -14,22 +14,82 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
         <script type="text/javascript">
+        var fetchingNewImage = false;
         function get_new_image (){
+            if (fetchingNewImage == false){
+                loaderAnim.style.visibility='visible'
+                fetchingNewImage = true;
+                $.post("/",
+                {
+                    requestType: "RefreshImage"
+                },
+                function(data,status){
+                    if (status == "success"){
+                        var image = document.getElementById("webcam_img");
+                        image.src = "{{ url_for('static', filename='webcam_images/') }}".concat(data);
+                        fetchingNewImage = false;
+                        loaderAnim.style.visibility='hidden'
+                    }
+                    
+                });
+
+            }
+
+        }
+
+        function get_latest_image (){
+            loaderAnim.style.visibility='visible'
             $.post("/",
             {
-            requestType: "RefreshImage"
+                requestType: "LastImage"
             },
             function(data,status){
                 if (status == "success"){
-                    var image = document.getElementById('webcam_img');
+                    var image = document.getElementById("webcam_img");
                     image.src = "{{ url_for('static', filename='webcam_images/') }}".concat(data);
-                    // console.log("{{ url_for('static', filename='webcam_images/webcam_') }}".concat(data,".jpg"));
+                    loaderAnim.style.visibility='hidden'
                 }
                 
-            });
+            }); 
         }
 
+        function get_pre_image (){
+            var image = document.getElementById("webcam_img");
+            loaderAnim.style.visibility='visible'
+            $.post("/",
+            {
+                requestType: "PreImage",
+                imageName: image.src
+            },
+            function(data,status){
+                if (status == "success"){
+                    console.log(data)
+                    var image = document.getElementById("webcam_img");
+                    image.src = "{{ url_for('static', filename='webcam_images/') }}".concat(data);
+                    loaderAnim.style.visibility='hidden'
+                }
+                
+            }); 
+        }
 
+        function get_next_image (){
+            var image = document.getElementById("webcam_img");
+            loaderAnim.style.visibility='visible'
+            $.post("/",
+            {
+                requestType: "NextImage",
+                imageName: image.src
+            },
+            function(data,status){
+                if (status == "success"){
+                    console.log(data)
+                    var image = document.getElementById("webcam_img");
+                    image.src = "{{ url_for('static', filename='webcam_images/') }}".concat(data);
+                    loaderAnim.style.visibility='hidden'
+                }
+                
+            }); 
+        }
         </script>
 
     </head>
@@ -43,13 +103,35 @@
         </div>
 
         <div id="webcam_div">
-            <img src="{{ url_for('static', filename='webcam_images/' + imgFileName) }}" alt="Webcam Image" width="100%" id="webcam_img">    
+            <img src="{{ url_for('static', filename='webcam_images/' + imgFileName) }}" alt="Webcam Image" width="100%" id="webcam_img">
+            <div id ="shutter_button_div">
+                
+                <img src="{{ url_for('static', filename='camera_shutter.png') }}" alt="shutter icon"  id="reload_button_img" width="100%" onclick="get_new_image();">
+            </div>
+            
+            <div id ="up_button_div">
+                
+                <img src="{{ url_for('static', filename='arrow_up.png') }}" alt="up icon"  id="up_button_img" width="100%" onclick="get_latest_image();">
+            </div>
+
+            <div id ="pre_button_div">  
+                <img src="{{ url_for('static', filename='arrow_up.png') }}" alt="pre icon"  id="pre_button_img" width="100%" onclick="get_pre_image();">
+            </div>
+
+            <div id ="next_button_div">  
+                <img src="{{ url_for('static', filename='arrow_up.png') }}" alt="next icon"  id="next_button_img" width="100%" onclick="get_next_image();">
+            </div>
+
+            <div id = "loader_anim" class="loader"></div>
+
+            <script type="text/javascript">
+                var loaderAnim = document.getElementById("loader_anim");
+                loaderAnim.style.visibility='hidden'
+            </script>
+                    
         </div>
 
-        <div id="reload_button_div">
-            <img src="{{ url_for('static', filename='reload.png') }}" alt="Webcam Image"  id="reload_button_img" width="10%" onclick="get_new_image();">
-        </div>
-        
+         
         
     </body>
 </html>

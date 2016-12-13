@@ -14,18 +14,22 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
         <script type="text/javascript">
+
         var fetchingNewImage = false;
-        function get_new_image (){
+        function get_image (reqType){
+            console.log(reqType)
+            var image = document.getElementById("webcam_img");
             if (fetchingNewImage == false){
                 loaderAnim.style.visibility='visible'
                 fetchingNewImage = true;
                 $.post("/",
                 {
-                    requestType: "RefreshImage"
+                    requestType: reqType,
+                    imageName: image.src
                 },
                 function(data,status){
                     if (status == "success"){
-                        var image = document.getElementById("webcam_img");
+                        console.log(data);
                         image.src = "{{ url_for('static', filename='webcam_images/') }}".concat(data);
                         fetchingNewImage = false;
                         loaderAnim.style.visibility='hidden'
@@ -36,60 +40,40 @@
             }
 
         }
-
-        function get_latest_image (){
-            loaderAnim.style.visibility='visible'
+        function get_LED_status(){
+            console.log("LED_status")
             $.post("/",
             {
-                requestType: "LastImage"
+                requestType: "LEDStatus"
             },
             function(data,status){
                 if (status == "success"){
-                    var image = document.getElementById("webcam_img");
-                    image.src = "{{ url_for('static', filename='webcam_images/') }}".concat(data);
-                    loaderAnim.style.visibility='hidden'
+                    console.log(data);
+                    if (data == "ON"){
+                        LED_Toggle.checked = true;
+                    }
+                    else{
+                        LED_Toggle.checked = false;
+                    };
                 }
                 
-            }); 
+            });
         }
-
-        function get_pre_image (){
-            var image = document.getElementById("webcam_img");
-            loaderAnim.style.visibility='visible'
+        function toggle_LED(){
+            console.log("LED_TOGGLE")
             $.post("/",
             {
-                requestType: "PreImage",
-                imageName: image.src
+                requestType: "LEDToggle"
             },
             function(data,status){
                 if (status == "success"){
-                    console.log(data)
-                    var image = document.getElementById("webcam_img");
-                    image.src = "{{ url_for('static', filename='webcam_images/') }}".concat(data);
-                    loaderAnim.style.visibility='hidden'
-                }
+                    get_LED_status();
+                };
                 
-            }); 
+            });
+
         }
 
-        function get_next_image (){
-            var image = document.getElementById("webcam_img");
-            loaderAnim.style.visibility='visible'
-            $.post("/",
-            {
-                requestType: "NextImage",
-                imageName: image.src
-            },
-            function(data,status){
-                if (status == "success"){
-                    console.log(data)
-                    var image = document.getElementById("webcam_img");
-                    image.src = "{{ url_for('static', filename='webcam_images/') }}".concat(data);
-                    loaderAnim.style.visibility='hidden'
-                }
-                
-            }); 
-        }
         </script>
 
     </head>
@@ -106,20 +90,20 @@
             <img src="{{ url_for('static', filename='webcam_images/' + imgFileName) }}" alt="Webcam Image" width="100%" id="webcam_img">
             <div id ="shutter_button_div">
                 
-                <img src="{{ url_for('static', filename='camera_shutter.png') }}" alt="shutter icon"  id="reload_button_img" width="100%" onclick="get_new_image();">
+                <img src="{{ url_for('static', filename='camera_shutter.png') }}" alt="shutter icon"  id="reload_button_img" width="100%" onclick="get_image( 'RefreshImage');">
             </div>
             
             <div id ="up_button_div">
                 
-                <img src="{{ url_for('static', filename='arrow_up.png') }}" alt="up icon"  id="up_button_img" width="100%" onclick="get_latest_image();">
+                <img src="{{ url_for('static', filename='arrow_up.png') }}" alt="up icon"  id="up_button_img" width="100%" onclick="get_image('LastImage');">
             </div>
 
             <div id ="pre_button_div">  
-                <img src="{{ url_for('static', filename='arrow_up.png') }}" alt="pre icon"  id="pre_button_img" width="100%" onclick="get_pre_image();">
+                <img src="{{ url_for('static', filename='arrow_up.png') }}" alt="pre icon"  id="pre_button_img" width="100%" onclick="get_image('PreImage');">
             </div>
 
             <div id ="next_button_div">  
-                <img src="{{ url_for('static', filename='arrow_up.png') }}" alt="next icon"  id="next_button_img" width="100%" onclick="get_next_image();">
+                <img src="{{ url_for('static', filename='arrow_up.png') }}" alt="next icon"  id="next_button_img" width="100%" onclick="get_image('NextImage');">
             </div>
 
             <div id = "loader_anim" class="loader"></div>
@@ -128,7 +112,19 @@
                 var loaderAnim = document.getElementById("loader_anim");
                 loaderAnim.style.visibility='hidden'
             </script>
+
+            <label class="switch" >
+              <input id="LED_Toggle" type="checkbox" onchange="toggle_LED();">
+              <div class="slider round"></div>
+            </label>
+            <label id = "LED_toggle_lbl">LED Switch</label>
+            
+            <script type="text/javascript">
+                LED_Toggle = document.getElementById("LED_Toggle");
+                get_LED_status();    
+            </script>
                     
+        
         </div>
 
          

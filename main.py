@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request
-from PIL import Image
 from subprocess import Popen,TimeoutExpired,PIPE, call
+import Adafruit_BBIO.GPIO as GPIO
 from os.path import getctime
 import os
 import glob
 import datetime, time
 import threading
+
 
 webcamLock = threading.Lock()
 
@@ -115,13 +116,29 @@ def index ():
             imageName = request.form['imageName']
             preImageName = find_image(imageName, requestType = 'next')
             return preImageName
+        if requestType == "LEDStatus":
+            LEDStatus = GPIO.input(LEDLight)
+            if LEDStatus:
+                return "ON"
+            else:
+                return "OFF"
+        if requestType == "LEDToggle":
+            LEDStatus = GPIO.input(LEDLight)
+            print (LEDStatus)
+            if LEDStatus:
+                GPIO.output(LEDLight, GPIO.LOW)
+            else:
+                GPIO.output(LEDLight, GPIO.HIGH)
 
     latestImageTime,latestImageName = find_latest_image()
     return render_template("index.html",imgFileName=latestImageName)
 
 
 if __name__ == "__main__":
-    
-    fetch_new_image_periodic(30)
+    LEDLight = "P9_23"
+    GPIO.setup(LEDLight, GPIO.OUT)
+    GPIO.output(LEDLight, GPIO.LOW)
+    # fetch_new_image_periodic(300)
     app.run(host = "0.0.0.0",threaded=True)
 # ,debug=True
+

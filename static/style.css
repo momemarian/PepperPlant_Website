@@ -35,6 +35,7 @@ p {
     width: 80px;
     height: 80px;
     left: 0;
+    bottom: -100px;
 
 }
 #up_button_div{
@@ -42,6 +43,7 @@ p {
     width: 80px;
     height: 80px;
     left: 120px;
+    bottom: -100px;
 }
 #pre_button_div{
     position: absolute;
@@ -49,6 +51,7 @@ p {
     height: 80px;
     left: 240px;
     transform: rotate(-90deg);
+    bottom: -100px;
 }
 #next_button_div
 {
@@ -57,6 +60,7 @@ p {
     height: 80px;
     left: 360px;
     transform: rotate(90deg);
+    bottom: -100px;
 }
 .loader {
   position: absolute;
@@ -76,3 +80,58 @@ p {
   100% { transform: rotate(360deg); }
 }
 
+
+
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  width: 144px;
+  height: 80px;
+  right: 0;
+  bottom: -100px;
+  background-color: #ccc;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 64px;
+  width: 64px;
+  left: 8px;
+  bottom: 8px;
+  background-color: white;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(64px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 40px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+#LED_toggle_lbl{
+  position: absolute;
+  font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    font-size:40px;
+    font-style: bold;
+    right:155px;
+    bottom: -85px;
+}

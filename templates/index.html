@@ -19,6 +19,7 @@
         function get_image (reqType){
             console.log(reqType)
             var image = document.getElementById("webcam_img");
+            var full_size_image = document.getElementById("full_size_webcam_image");
             if (fetchingNewImage == false){
                 loaderAnim.style.visibility='visible'
                 fetchingNewImage = true;
@@ -30,7 +31,8 @@
                 function(data,status){
                     if (status == "success"){
                         console.log(data);
-                        image.src = "{{ url_for('static', filename='webcam_images/') }}".concat(data);
+                        full_size_image.href = "{{ url_for('static', filename='webcam_images/') }}".concat(data);
+                        image.src = "{{ url_for('static', filename='webcam_images/thumbs/') }}".concat(data);
                         fetchingNewImage = false;
                         loaderAnim.style.visibility='hidden'
                     }
@@ -87,7 +89,9 @@
         </div>
 
         <div id="webcam_div">
-            <img src="{{ url_for('static', filename='webcam_images/' + imgFileName) }}" alt="Webcam Image" width="100%" id="webcam_img">
+            <a href="{{ url_for('static', filename='webcam_images/' + imgFileName) }}" id = "full_size_webcam_image">
+                <img src="{{ url_for('static', filename='webcam_images/thumbs/' + imgFileName) }}" alt="Webcam Image" width="100%" id="webcam_img">
+            </a>
             <div id ="shutter_button_div">
                 
                 <img src="{{ url_for('static', filename='camera_shutter.png') }}" alt="shutter icon"  id="reload_button_img" width="100%" onclick="get_image( 'RefreshImage');">

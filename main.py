@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request
+from functools import wraps
+from flask import Flask, render_template, request,Response
 from subprocess import Popen,TimeoutExpired,PIPE, call
 import Adafruit_BBIO.GPIO as GPIO
 from os.path import getctime
@@ -6,6 +7,30 @@ import os
 import glob
 import datetime, time
 import threading
+from PIL import Image
+
+
+def check_auth(username, password):
+    """This function is called to check if a username /
+    password combination is valid.
+    """
+    return username == 'admin' and password == '7pepperS'
+
+def authenticate():
+    """Sends a 401 response that enables basic auth"""
+    return Response(
+    'Could not verify your access level for that URL.\n'
+    'You have to login with proper credentials', 401,
+    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+
+def requires_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.authorization
+        if not auth or not check_auth(auth.username, auth.password):
+            return authenticate()
+        return f(*args, **kwargs)
+    return decorated
 
 
 webcamLock = threading.Lock()
@@ -20,12 +45,12 @@ def find_image (imageSrc,requestType = 'next'):
         serverImageName = imageFile.split("/")[-1]
         if clienImageName == serverImageName:
             if requestType == 'next':
-                if i < len(imageFiles) -2 :
+                if i < len(imageFiles) -1 :
                     return imageFiles[i+1].split("/")[-1]
                 else:
                     return clienImageName
             elif requestType == 'pre':
-                if 1 < i  :
+                if 0 < i  :
                     return imageFiles[i-1].split("/")[-1]
                 else:
                     return clienImageName 
@@ -45,6 +70,12 @@ def find_latest_image ():
     except ValueError:
         return datetime.datetime(2016, 12, 9, 0, 0,0),""
 
+def create_thumbnail(imagePath):
+    size = 640, 360
+    thumbPath = (os.path.dirname(imagePath) +'/thumbs/' + os.path.basename(imagePath))
+    im = Image.open(imagePath)
+    im.thumbnail(size, Image.ANTIALIAS)
+    im.save(thumbPath, "JPEG")
 
 def fetch_new_image():
 
@@ -58,10 +89,12 @@ def fetch_new_image():
         webcamProc = Popen (["{0}/v4l2grab/v4l2grab".format(webSiteRoot), 
             "-W", "1920", "-H", "1080", "-q", "100"
             , "-o", '{0}/static/webcam_images/{1}'.format(webSiteRoot,imgFileName)], stdout=PIPE, stderr=PIPE)
+        
         try:
             outs, errs = webcamProc.communicate(timeout=10)
             if errs == b'':
                 print ("Received the requested image {0}.\n".format(imgFileName))
+                create_thumbnail('{0}/static/webcam_images/{1}'.format(webSiteRoot,imgFileName))
                 webcamLock.release()
                 return imgFileName
             else:
@@ -100,6 +133,7 @@ def fetch_new_image_periodic(periodInSeconds):
 
 app = Flask (__name__)
 @app.route("/",methods=['GET','POST'])
+@requires_auth
 def index ():
     if request.method == 'POST':
         requestType = request.form['requestType']
@@ -137,8 +171,8 @@ def index ():
 if __name__ == "__main__":
     LEDLight = "P9_23"
     GPIO.setup(LEDLight, GPIO.OUT)
-    GPIO.output(LEDLight, GPIO.LOW)
-    # fetch_new_image_periodic(300)
+    GPIO.output(LEDLight, GPIO.HIGH)
+    fetch_new_image_periodic(900)
     app.run(host = "0.0.0.0",threaded=True)
 # ,debug=True
 

@@ -6,7 +6,6 @@
 
     <link type="text/css" rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
 
-
     <head>
         
         <title>Pepper Plants Website</title>  
@@ -21,6 +20,7 @@
             var image = document.getElementById("webcam_img");
             var full_size_image = document.getElementById("full_size_webcam_image");
             if (fetchingNewImage == false){
+                loaderAnim.style.webkitAnimationPlayState = "running";
                 loaderAnim.style.visibility='visible'
                 fetchingNewImage = true;
                 $.post("/",
@@ -35,6 +35,7 @@
                         image.src = "{{ url_for('static', filename='webcam_images/thumbs/') }}".concat(data);
                         fetchingNewImage = false;
                         loaderAnim.style.visibility='hidden'
+                        loaderAnim.style.webkitAnimationPlayState = "paused";
                     }
                     
                 });
@@ -43,14 +44,14 @@
 
         }
         function get_LED_status(){
-            console.log("LED_status")
+            console.log("?Fetch LED status")
             $.post("/",
             {
                 requestType: "LEDStatus"
             },
             function(data,status){
                 if (status == "success"){
-                    console.log(data);
+                    console.log("The LED was :" + data);
                     if (data == "ON"){
                         LED_Toggle.checked = true;
                     }
@@ -62,7 +63,7 @@
             });
         }
         function toggle_LED(){
-            console.log("LED_TOGGLE")
+            console.log("Toggle LED")
             $.post("/",
             {
                 requestType: "LEDToggle"
@@ -72,6 +73,32 @@
                     get_LED_status();
                 };
                 
+            });
+
+        }
+
+          
+
+        
+        function water(){
+            
+            var waterInput = document.getElementById("water_period");
+            console.log("Watering plants for " + waterInput.value+ " seconds")
+
+            btnLbl.style.color = "#2196F3";
+            btnLbl.style.backgroundColor  = "white";
+
+            btnLoaderAnim.preventDefault;
+            btnLoaderAnim.classList.remove("lbl_button_loader");
+            void btnLoaderAnim.offsetWidth;
+            btnLoaderAnim.classList.add("lbl_button_loader");
+
+
+            btnLoaderAnim.style.webkitAnimationDuration = waterInput.value + 's';
+            $.post("/",
+            {
+                requestType: "water",
+                period:btnLoaderAnim.style.webkitAnimationDuration
             });
 
         }
@@ -115,6 +142,7 @@
             <script type="text/javascript">
                 var loaderAnim = document.getElementById("loader_anim");
                 loaderAnim.style.visibility='hidden'
+                
             </script>
 
             <label class="switch" >
@@ -127,11 +155,19 @@
                 LED_Toggle = document.getElementById("LED_Toggle");
                 get_LED_status();    
             </script>
-                    
-        
+
+            <label id = "watering_period_lbl">Watering period:</label>
+            <input class="text_input" type="number" id = "water_period" value= 5>
+            <label class="lbl_button" id= "btnLbl" onclick="water();">&nbsp;Water&nbsp;</label>
+            <label class="lbl_button_loader" id="btn_loader_anim" onclick="water();">&nbsp;Water&nbsp;</label>
+            <script type="text/javascript">
+                var btnLbl = document.getElementById("btnLbl");
+                var btnLoaderAnim = document.getElementById("btn_loader_anim");
+            </script>
+
         </div>
 
-         
+           
         
     </body>
 </html>

@@ -28,6 +28,7 @@ p {
     position: relative;
     margin: auto;
     width: 960px;
+    margin-bottom: 300px;
 }
 
 #shutter_button_div{
@@ -36,7 +37,7 @@ p {
     height: 80px;
     left: 0;
     bottom: -100px;
-
+    cursor: pointer;
 }
 #up_button_div{
     position: absolute;
@@ -44,6 +45,7 @@ p {
     height: 80px;
     left: 120px;
     bottom: -100px;
+    cursor: pointer;
 }
 #pre_button_div{
     position: absolute;
@@ -52,6 +54,7 @@ p {
     left: 240px;
     transform: rotate(-90deg);
     bottom: -100px;
+    cursor: pointer;
 }
 #next_button_div
 {
@@ -61,6 +64,7 @@ p {
     left: 360px;
     transform: rotate(90deg);
     bottom: -100px;
+    cursor: pointer;
 }
 .loader {
   position: absolute;
@@ -107,11 +111,11 @@ p {
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #2dd22d;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #2dd22d;
 }
 
 input:checked + .slider:before {
@@ -127,11 +131,74 @@ input:checked + .slider:before {
   border-radius: 50%;
 }
 
+
 #LED_toggle_lbl{
   position: absolute;
   font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
     font-size:40px;
-    font-style: bold;
     right:155px;
     bottom: -85px;
 }
+
+#watering_period_lbl{
+  position: absolute;
+  font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+  font-size:50px;
+  padding: 5px 0px;
+  margin: 4px 2px;
+  left : 0px;
+  bottom: -220px;
+  
+}
+
+.text_input
+{
+  position: absolute;
+  font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+  border:none;
+  border-bottom: 2px solid #0F0F0F;
+  width: 102px;
+  margin: 4px 2px;
+  font-size: 50px;
+  left: 420px;
+  bottom: -220px;
+}
+
+
+
+.lbl_button {
+    position: absolute; 
+    background-color: #2196F3;
+    color: white;
+    font-size: 50px;
+    padding: 5px 0px;
+    margin: 4px 2px;
+    cursor: pointer;
+    left: 550px;
+    bottom: -220px;
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+}
+
+
+.lbl_button_loader {
+    position: absolute;
+    left: 550px;
+    bottom: -220px;
+    padding: 5px 0px;
+    margin: 4px 2px;
+    width: 175px;
+    background-color:#2196F3 ;
+    color:white ;
+    cursor: pointer;
+    overflow: hidden;
+    font-size: 50px;
+    font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+    animation: loading linear 1;
+}
+
+@keyframes loading {
+    0% {
+        width : 0px;
+    }
+}
+

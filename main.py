@@ -129,6 +129,10 @@ def fetch_new_image_periodic(periodInSeconds):
     threading.Timer(periodInSeconds, fetch_new_image_periodic, args=[periodInSeconds]).start()
         
  
+def waterPlants(periodInSeconds):
+    GPIO.output(waterValvePin, GPIO.HIGH)
+    time.sleep(periodInSeconds)
+    GPIO.output(waterValvePin, GPIO.LOW)
 
 
 app = Flask (__name__)
@@ -151,28 +155,45 @@ def index ():
             preImageName = find_image(imageName, requestType = 'next')
             return preImageName
         if requestType == "LEDStatus":
-            LEDStatus = GPIO.input(LEDLight)
+            LEDStatus = GPIO.input(LEDLightPing)
             if LEDStatus:
                 return "ON"
             else:
                 return "OFF"
         if requestType == "LEDToggle":
-            LEDStatus = GPIO.input(LEDLight)
+            LEDStatus = GPIO.input(LEDLightPing)
             print (LEDStatus)
             if LEDStatus:
-                GPIO.output(LEDLight, GPIO.LOW)
+                GPIO.output(LEDLightPing, GPIO.LOW)
             else:
-                GPIO.output(LEDLight, GPIO.HIGH)
+                GPIO.output(LEDLightPing, GPIO.HIGH)
+
+        if requestType == "water":
+            waterValveStatus = GPIO.input(waterValvePin)
+            strPeriod = request.form['period']
+            if strPeriod != "":
+                wateringPeriod = int(strPeriod.split('s')[0])
+                if wateringPeriod > 30:
+                    wateringPeriod = 30
+                if not waterValveStatus:
+                    waterPlants (wateringPeriod)
+
 
     latestImageTime,latestImageName = find_latest_image()
     return render_template("index.html",imgFileName=latestImageName)
 
 
 if __name__ == "__main__":
-    LEDLight = "P9_23"
-    GPIO.setup(LEDLight, GPIO.OUT)
-    GPIO.output(LEDLight, GPIO.HIGH)
+    LEDLightPing = "P9_23"
+    GPIO.setup(LEDLightPing, GPIO.OUT)
+    GPIO.output(LEDLightPing, GPIO.HIGH)
+
+    waterValvePin = "P9_15"
+    GPIO.setup(waterValvePin, GPIO.OUT)
+    GPIO.output(waterValvePin, GPIO.LOW)
+
     fetch_new_image_periodic(900)
+    # app.run(host = "0.0.0.0",threaded=True,debug=True)
     app.run(host = "0.0.0.0",threaded=True)
-# ,debug=True
+
 
